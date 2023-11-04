@@ -1,5 +1,5 @@
 locals {
-  tags = {
+  tags = { # tags
     business_unit = "ecommerce"
     business_type = "retail"
     project       = "roboshop"
