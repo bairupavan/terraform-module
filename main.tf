@@ -7,10 +7,10 @@ module "vpc" { # calling the vpc module from git
   tags       = local.tags               # tags from local
 }
 
-module "app" {
+module "web" {
   source = "git::https://github.com/bairupavan/tf-module-app.git"
   for_each = var.app
   instance_type = each.value["instance_type"]
+  env = var.env
   subnet_id = element(lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null),each.value["subnet_name"], null), "subnet_ids", null), 0)
-
 }
