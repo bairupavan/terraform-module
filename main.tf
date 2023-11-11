@@ -21,6 +21,7 @@ module "app" {
   # general variables
   env          = var.env
   bastion_cidr = var.bastion_cidr
+  tags         = local.tags
 
   # sending these from the env-dev/main.tfvars vpc {}
   subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
