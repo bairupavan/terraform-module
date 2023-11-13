@@ -1,5 +1,8 @@
-env          = "dev"
-bastion_cidr = ["172.31.28.131/32"]
+env                  = "dev"
+bastion_cidr         = ["172.31.28.131/32"]
+default_vpc_id       = "vpc-0a1bf336cf22dd9ab"
+default_vpc_route_id = "rtb-097d2c148c9b47828"
+default_vpc_cidr     = "172.31.0.0/16"
 vpc = {
   main = {
     cidr_block = "10.0.0.0/16"
