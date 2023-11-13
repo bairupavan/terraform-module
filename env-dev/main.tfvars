@@ -51,3 +51,11 @@ app = {
     min_size         = 1
   }
 }
+
+docdb = {
+  main = {
+    subnet_name = "db"
+    engine_version = "4.0.0"
+    allow_db_cidr = "app"
+  }
+}
