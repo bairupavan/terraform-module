@@ -33,16 +33,18 @@ module "app" {
 }
 
 module "docdb" {
-  source   = "git::https://github.com/bairupavan/tf-module-docdb.git"
-  for_each = var.docdb
+  source         = "git::https://github.com/bairupavan/tf-module-docdb.git"
+  for_each       = var.docdb
   engine_version = each.value["engine_version"]
+  instance_count = each.value["instance_count"]
+  instance_class = each.value["instance_class"]
 
-  env          = var.env
-  tags         = local.tags
+  env  = var.env
+  tags = local.tags
 
   # sending these from the env-dev/main.tfvars vpc {}
-  subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
-  vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
   allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
 }
 
