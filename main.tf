@@ -32,6 +32,7 @@ module "app" {
   allow_app_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_app_cidr"], null), "subnet_cidrs", null)
 }
 
+# sending inputs to docdb
 module "docdb" {
   source         = "git::https://github.com/bairupavan/tf-module-docdb.git"
   for_each       = var.docdb
