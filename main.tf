@@ -49,3 +49,17 @@ module "docdb" {
   allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
 }
 
+# sending the inputs for rds
+module "rds" {
+  source         = "git::https://github.com/bairupavan/tf-module-rds.git"
+  for_each       = var.rds
+  engine_version = each.value["engine_version"]
+  instance_count = each.value["instance_count"]
+  instance_class = each.value["instance_class"]
+
+  # sending these from the env-dev/main.tfvars vpc {}
+  subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
+}
+
