@@ -66,3 +66,21 @@ module "rds" {
   allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
 }
 
+
+# sending the inputs for elasticache
+module "elasticache" {
+  source                  = "git::https://github.com/bairupavan/tf-module-elasticache.git"
+  for_each                = var.elasticache
+  engine_version          = each.value["engine_version"]
+  num_node_groups         = each.value["num_node_groups"]
+  replicas_per_node_group = each.value["replicas_per_node_group"]
+  node_type               = each.value["node_type"]
+
+  tags = local.tags
+  env  = var.env
+
+  # sending these from the env-dev/main.tfvars vpc {}
+  subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
+}

@@ -8,3 +8,4 @@ variable "default_vpc_cidr" {}
 
 variable "docdb" {}
 variable "rds" {}
+variable "elasticache" {}
