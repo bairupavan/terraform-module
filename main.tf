@@ -57,6 +57,9 @@ module "rds" {
   instance_count = each.value["instance_count"]
   instance_class = each.value["instance_class"]
 
+  tags = local.tags
+  env  = var.env
+
   # sending these from the env-dev/main.tfvars vpc {}
   subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
   vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
