@@ -66,7 +66,6 @@ module "rds" {
   allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
 }
 
-
 # sending the inputs for elasticache
 module "elasticache" {
   source                  = "git::https://github.com/bairupavan/tf-module-elasticache.git"
@@ -78,6 +77,22 @@ module "elasticache" {
 
   tags = local.tags
   env  = var.env
+
+  # sending these from the env-dev/main.tfvars vpc {}
+  subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
+}
+
+# sending the inputs for rabbitmq
+module "rabbitmq" {
+  source        = "git::https://github.com/bairupavan/tf-amazon-mq.git"
+  for_each      = var.rabbitmq
+  instance_type = each.value["instance_type"]
+
+  tags         = local.tags
+  env          = var.env
+  bastion_cidr = var.bastion_cidr
 
   # sending these from the env-dev/main.tfvars vpc {}
   subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
