@@ -9,28 +9,6 @@ module "vpc" { # calling the vpc module from git
   env                  = var.env    # env
   tags                 = local.tags # tags from local
 }
-#
-module "app" {
-  source   = "git::https://github.com/bairupavan/tf-module-app.git"
-  for_each = var.app
-
-  # these variables are from env-dev/main.tfvars - app {}
-  instance_type    = each.value["instance_type"]
-  name             = each.value["name"]
-  desired_capacity = each.value["desired_capacity"]
-  max_size         = each.value["max_size"]
-  min_size         = each.value["min_size"]
-
-  # general variables
-  env          = var.env
-  bastion_cidr = var.bastion_cidr
-  tags         = local.tags
-
-  # sending these from the env-dev/main.tfvars vpc {}
-  subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
-  vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
-  allow_app_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_app_cidr"], null), "subnet_cidrs", null)
-}
 
 # sending inputs to docdb
 module "docdb" {
@@ -98,4 +76,43 @@ module "rabbitmq" {
   subnet_ids    = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
   vpc_id        = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
   allow_db_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_db_cidr"], null), "subnet_cidrs", null)
+}
+
+module "alb" {
+  source   = "git::https://github.com/bairupavan/tf-module-alb.git"
+  for_each = var.alb
+  internal = each.value["internal"]
+  name     = each.value["name"]
+
+  tags = local.tags
+  env  = var.env
+
+  # sending these from the env-dev/main.tfvars vpc {}
+  subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  allow_alb_cidr = each.value["name"] == "public" ? "0.0.0.0/0" : lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_alb_cidr"], null), "subnet_cidrs", null)
+}
+
+module "app" {
+  depends_on = [module.vpc, module.docdb, module.rds, module.elasticache, module.rabbitmq, module.alb]
+  source     = "git::https://github.com/bairupavan/tf-module-app.git"
+  for_each   = var.app
+
+  # these variables are from env-dev/main.tfvars - app {}
+  instance_type    = each.value["instance_type"]
+  name             = each.value["name"]
+  desired_capacity = each.value["desired_capacity"]
+  max_size         = each.value["max_size"]
+  min_size         = each.value["min_size"]
+
+  # general variables
+  env          = var.env
+  bastion_cidr = var.bastion_cidr
+  tags         = local.tags
+  app_port     = var.app_port
+
+  # sending these from the env-dev/main.tfvars vpc {}
+  subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
+  vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
+  allow_app_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_app_cidr"], null), "subnet_cidrs", null)
 }

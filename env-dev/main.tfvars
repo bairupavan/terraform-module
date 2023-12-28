@@ -37,18 +37,20 @@ app = {
     instance_type    = "t2.micro"
     subnet_name      = "web"
     allow_app_cidr   = "public"
-    desired_capacity = 2
+    desired_capacity = 1
     max_size         = 4
     min_size         = 1
+    app_port         = 80
   }
   catalogue = {
     name             = "catalogue"
     instance_type    = "t2.micro"
     subnet_name      = "app"
     allow_app_cidr   = "web"
-    desired_capacity = 2
+    desired_capacity = 1
     max_size         = 4
     min_size         = 1
+    app_port         = 8080
   }
 }
 
@@ -88,6 +90,21 @@ rabbitmq = {
     subnet_name   = "db"
     allow_db_cidr = "app"
     instance_type = "t3.small"
+  }
+}
+
+alb = {
+  public = {
+    name           = "public"
+    subnet_name    = "public"
+    allow_alb_cidr = null
+    internal       = false
+  }
+  private = {
+    name           = "private"
+    subnet_name    = "private"
+    allow_alb_cidr = "web"
+    internal       = true
   }
 }
 
