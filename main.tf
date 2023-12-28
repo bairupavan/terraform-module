@@ -90,7 +90,7 @@ module "alb" {
   # sending these from the env-dev/main.tfvars vpc {}
   subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
   vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
-  allow_alb_cidr = each.value["name"] == "public" ? "0.0.0.0/0" : lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_alb_cidr"], null), "subnet_cidrs", null)
+  allow_alb_cidr = each.value["name"] == "public" ? ["0.0.0.0/0"] : lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_alb_cidr"], null), "subnet_cidrs", null)
 }
 
 module "app" {
