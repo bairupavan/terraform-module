@@ -104,12 +104,12 @@ module "app" {
   desired_capacity = each.value["desired_capacity"]
   max_size         = each.value["max_size"]
   min_size         = each.value["min_size"]
+  app_port         = each.value["app_port"]
 
   # general variables
   env          = var.env
   bastion_cidr = var.bastion_cidr
   tags         = local.tags
-  app_port     = var.app_port
 
   # sending these from the env-dev/main.tfvars vpc {}
   subnet_ids     = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["subnet_name"], null), "subnet_ids", null)
