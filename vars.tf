@@ -6,7 +6,6 @@ variable "default_vpc_id" {}
 variable "default_vpc_route_id" {}
 variable "default_vpc_cidr" {}
 variable "alb" {}
-variable "app_port" {}
 
 variable "docdb" {}
 variable "rds" {}
