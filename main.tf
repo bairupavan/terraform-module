@@ -99,13 +99,14 @@ module "app" {
   for_each   = var.app
 
   # these variables are from env-dev/main.tfvars - app {}
-  instance_type    = each.value["instance_type"]
-  name             = each.value["name"]
-  desired_capacity = each.value["desired_capacity"]
-  max_size         = each.value["max_size"]
-  min_size         = each.value["min_size"]
-  app_port         = each.value["app_port"]
-  dns_name         = each.value["name"] == "frontend" ? each.value["dns_name"] : "${each.value["name"]}-${var.env}"
+  instance_type     = each.value["instance_type"]
+  name              = each.value["name"]
+  desired_capacity  = each.value["desired_capacity"]
+  max_size          = each.value["max_size"]
+  min_size          = each.value["min_size"]
+  app_port          = each.value["app_port"]
+  listener_priority = each.value["listener_priority"]
+  dns_name          = each.value["name"] == "frontend" ? each.value["dns_name"] : "${each.value["name"]}-${var.env}"
 
   # general variables
   env          = var.env
@@ -121,5 +122,3 @@ module "app" {
   listener_arn   = lookup(lookup(module.alb, each.value["lb_type"], null), "listener_arn", null)
   alb_dns_name   = lookup(lookup(module.alb, each.value["lb_type"], null), "dns_name", null)
 }
-variable "listener_priority" {}
-
