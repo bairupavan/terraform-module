@@ -3,6 +3,8 @@ bastion_cidr         = ["172.31.28.131/32"]
 default_vpc_id       = "vpc-0a1bf336cf22dd9ab"
 default_vpc_route_id = "rtb-097d2c148c9b47828"
 default_vpc_cidr     = "172.31.0.0/16"
+domain_name          = "pavanbairu.tech"
+domain_id            = "Z08846229MEF59DJAKAS"
 vpc = {
   main = {
     cidr_block = "10.0.0.0/16"
@@ -33,24 +35,29 @@ vpc = {
 
 app = {
   frontend = {
-    name             = "frontend"
-    instance_type    = "t2.micro"
-    subnet_name      = "web"
-    allow_app_cidr   = "public"
-    desired_capacity = 1
-    max_size         = 4
-    min_size         = 1
-    app_port         = 80
+    name              = "frontend"
+    instance_type     = "t2.micro"
+    subnet_name       = "web"
+    allow_app_cidr    = "public"
+    desired_capacity  = 1
+    max_size          = 4
+    min_size          = 1
+    app_port          = 80
+    listener_priority = 1
+    lb_type           = "public"
+    dns_name          = "dev"
   }
   catalogue = {
-    name             = "catalogue"
-    instance_type    = "t2.micro"
-    subnet_name      = "app"
-    allow_app_cidr   = "web"
-    desired_capacity = 1
-    max_size         = 4
-    min_size         = 1
-    app_port         = 8080
+    name              = "catalogue"
+    instance_type     = "t2.micro"
+    subnet_name       = "app"
+    allow_app_cidr    = "web"
+    desired_capacity  = 1
+    max_size          = 4
+    min_size          = 1
+    app_port          = 8080
+    lb_type           = "private"
+    listener_priority = 1
   }
 }
 
