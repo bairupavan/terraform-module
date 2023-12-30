@@ -120,5 +120,5 @@ module "app" {
   vpc_id         = lookup(lookup(module.vpc, "main", null), "vpc_id", null)
   allow_app_cidr = lookup(lookup(lookup(lookup(module.vpc, "main", null), "subnets", null), each.value["allow_app_cidr"], null), "subnet_cidrs", null)
   listener_arn   = lookup(lookup(module.alb, each.value["lb_type"], null), "listener_arn", null)
-  alb_dns_name   = lookup(lookup(module.alb, each.value["lb_type"], null), "dns_name", null)
+  alb_dns_name   = lookup(lookup(module.alb, each.value["lb_type"], null), "lb_dns_name", null)
 }
