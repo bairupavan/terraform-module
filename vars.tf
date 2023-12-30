@@ -6,8 +6,6 @@ variable "default_vpc_id" {}
 variable "default_vpc_route_id" {}
 variable "default_vpc_cidr" {}
 variable "alb" {}
-variable "lb_type" {}
-variable "dns_name" {}
 variable "domain_name" {}
 variable "domain_id" {}
 
